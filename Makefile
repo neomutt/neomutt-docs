@@ -19,7 +19,7 @@ SRC_SOURCE = functions.h init.h opcodes.h
 
 CFLAGS	= -Wall -std=c99
 
-BUILD	= index.html makedoc manual.html manual.txt manual.xml neomutt.1 neomuttrc neomuttrc.5
+BUILD	= index.html makedoc guide.html guide.txt guide.xml neomutt.1 neomuttrc neomuttrc.5
 CHUNKED_DOCFILES = advancedusage.html configuration.html gettingstarted.html \
 	intro.html mimesupport.html miscellany.html optionalfeatures.html \
 	reference.html security.html tuning.html
@@ -55,32 +55,32 @@ neomuttrc: neomuttrc.head makedoc src/init.h
 		$(EDIT) src/init.h | ./makedoc -c; \
 	) > $@
 
-manual.xml:	src/functions.h src/init.h manual.xml.head manual.xml.tail gen-map-doc makedoc
+guide.xml:	src/functions.h src/init.h guide/guide.xml.head guide/guide.xml.tail guide/gen-map-doc makedoc
 	( \
-		$(EDIT) manual.xml.head; \
+		$(EDIT) guide/guide.xml.head; \
 		$(EDIT) src/init.h | ./makedoc -s; \
-		$(EDIT) src/functions.h | perl gen-map-doc manual.xml.tail src/opcodes.h; \
+		$(EDIT) src/functions.h | perl guide/gen-map-doc guide/guide.xml.tail src/opcodes.h; \
 	) > $@
 
-manual.html: manual.xml html.xsl neomutt.xsl neomutt.css
-	-xsltproc --nonet -o $@ html.xsl manual.xml
+guide.html: guide.xml guide/html.xsl guide/neomutt.xsl guide/neomutt.css
+	-xsltproc --nonet -o $@ guide/html.xsl guide.xml
 
 $(CHUNKED_DOCFILES): index.html
 
-index.html: chunk.xsl neomutt.xsl manual.xml neomutt.css
-	-xsltproc --nonet chunk.xsl manual.xml > /dev/null 2>&1
+index.html: guide/chunk.xsl guide/neomutt.xsl guide.xml guide/neomutt.css
+	-xsltproc --nonet guide/chunk.xsl guide.xml > /dev/null 2>&1
 
-manual.txt: manual.html
-	-LC_ALL=C w3m -dump -O UTF8 manual.html > $@ || \
-	LC_ALL=C lynx -dump -nolist -with_backspaces -display_charset=us-ascii manual.html > $@ || \
-	LC_ALL=C elinks -dump -no-numbering -no-references manual.html | sed -e 's,\\001, ,g' > $@
+guide.txt: guide.html
+	-LC_ALL=C w3m -dump -O UTF8 guide.html > $@ || \
+	LC_ALL=C lynx -dump -nolist -with_backspaces -display_charset=us-ascii guide.html > $@ || \
+	LC_ALL=C elinks -dump -no-numbering -no-references guide.html | sed -e 's,\\001, ,g' > $@
 
 spellcheck:
-	-aspell -d american --mode=sgml  --encoding=utf-8 -p neomutt.pwl check manual.xml.head
+	-aspell -d american --mode=sgml  --encoding=utf-8 -p neomutt.pwl check guide/guide.xml.head
 	-aspell -d american --mode=nroff --encoding=utf-8 -p neomutt.pwl check man/neomuttrc.man.head
 	-aspell -d american --mode=ccpp  --encoding=utf-8 -p neomutt.pwl check src/init.h
 
-validate: manual.xml
+validate: guide.xml
 	xmllint --noout --noblanks --postvalid $<
 
 neomutt.1: man/neomutt.man
@@ -103,10 +103,10 @@ install:	all
 		$(INSTALL) -m 644 logo/$$i $(DESTDIR)$(DOC_DIR)/logo; \
 	done
 	$(MKDIR) $(DESTDIR)$(DOC_DIR)
-	for i in manual.html index.html $(CHUNKED_DOCFILES); do \
+	for i in guide.html index.html $(CHUNKED_DOCFILES); do \
 		$(INSTALL) -m 644 $$i $(DESTDIR)$(DOC_DIR); \
 	done
-	for i in manual.txt neomutt-syntax.vim neomuttrc PGP-Notes.txt smime-notes.txt; do \
+	for i in guide.txt neomutt-syntax.vim neomuttrc PGP-Notes.txt smime-notes.txt; do \
 		$(INSTALL) -m 644 $$i $(DESTDIR)$(DOC_DIR); \
 	done
 	for i in $(SRC_DOCS); do \
@@ -125,10 +125,10 @@ uninstall:
 	for i in neomutt-32.png neomutt-64.png neomutt-128.png neomutt-256.png neomutt.svg; do \
 		$(RM) $(DESTDIR)$(DOC_DIR)/logo; \
 	done
-	for i in manual.html index.html $(CHUNKED_DOCFILES); do \
+	for i in guide.html index.html $(CHUNKED_DOCFILES); do \
 		$(RM) $(DESTDIR)$(DOC_DIR)/$$i; \
 	done
-	for i in manual.txt neomutt-syntax.vim neomuttrc PGP-Notes.txt smime-notes.txt; do \
+	for i in guide.txt neomutt-syntax.vim neomuttrc PGP-Notes.txt smime-notes.txt; do \
 		$(RM) $(DESTDIR)$(DOC_DIR)/$$i; \
 	done
 	for i in $(SRC_DOCS); do \
