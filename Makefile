@@ -1,4 +1,4 @@
-VERSION=$(shell cat VERSION)
+VERSION=20170912
 DESTDIR =
 PREFIX = /usr/local
 ifeq ($(PREFIX),/usr)
@@ -42,11 +42,11 @@ clean:
 
 distclean: clean
 
-neomuttrc.5:	neomuttrc.man.head neomuttrc.man.tail makedoc src/init.h
+neomuttrc.5:	man/neomuttrc.man.head man/neomuttrc.man.tail makedoc src/init.h
 	( \
-		cat neomuttrc.man.head; \
+		cat man/neomuttrc.man.head; \
 		$(EDIT) src/init.h | ./makedoc -m; \
-		cat neomuttrc.man.tail; \
+		cat man/neomuttrc.man.tail; \
 	) > $@
 
 neomuttrc: neomuttrc.head makedoc src/init.h
@@ -77,25 +77,25 @@ manual.txt: manual.html
 
 spellcheck:
 	-aspell -d american --mode=sgml  --encoding=utf-8 -p neomutt.pwl check manual.xml.head
-	-aspell -d american --mode=nroff --encoding=utf-8 -p neomutt.pwl check neomuttrc.man.head
+	-aspell -d american --mode=nroff --encoding=utf-8 -p neomutt.pwl check man/neomuttrc.man.head
 	-aspell -d american --mode=ccpp  --encoding=utf-8 -p neomutt.pwl check src/init.h
 
 validate: manual.xml
 	xmllint --noout --noblanks --postvalid $<
 
-neomutt.1: neomutt.man
-	$(EDIT) neomutt.man > $@
+neomutt.1: man/neomutt.man
+	$(EDIT) man/neomutt.man > $@
 
 install:	all
 	$(MKDIR) $(DESTDIR)$(MAN_DIR)/man1
 	for i in pgpewrap pgpring smime_keys; do \
-		$(INSTALL) -m 644 $$i.1 $(DESTDIR)$(MAN_DIR)/man1/$${i}_neomutt.1; \
+		$(INSTALL) -m 644 man/$$i.1 $(DESTDIR)$(MAN_DIR)/man1/$${i}_neomutt.1; \
 	done
 	$(INSTALL) -m 644 neomutt.1 $(DESTDIR)$(MAN_DIR)/man1
 
 	$(MKDIR) $(DESTDIR)$(MAN_DIR)/man5
 	for i in mbox mmdf; do \
-		$(INSTALL) -m 644 $$i.5 $(DESTDIR)$(MAN_DIR)/man5/$${i}_neomutt.5; \
+		$(INSTALL) -m 644 man/$$i.5 $(DESTDIR)$(MAN_DIR)/man5/$${i}_neomutt.5; \
 	done
 	$(INSTALL) -m 644 neomuttrc.5 $(DESTDIR)$(MAN_DIR)/man5
 	$(MKDIR) $(DESTDIR)$(DOC_DIR)/logo
