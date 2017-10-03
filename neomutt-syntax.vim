@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:	NeoMutt setup files
 " Maintainer:	Guillaume Brogi <gui-gui@netcourrier.com>
-" Last Change:	2017-09-17
+" Last Change:	2017-10-03
 " Original version based on syntax/muttrc.vim
 
 " This file covers NeoMutt 20170912
@@ -146,7 +146,8 @@ function s:escapesConditionals(baseName, sequence, alignment, secondary)
 	endif
 endfunction
 
-
+" flatcap compiled a list of formats here: https://pastebin.com/raw/5QXhiP6L
+" UPDATE
 " The following info was pulled from hdr_format_str in hdrline.c
 call s:escapesConditionals('IndexFormat', '[AaBbCcDdEeFfgHIiJKLlMmNnOPqrSsTtuvWXxYyZz(<[{]\|G[a-zA-Z]\+', 1, 1)
 " The following info was pulled from alias_format_str in addrbook.c
@@ -207,10 +208,14 @@ syntax match muttrcVarEqualsStrftimeFmt contained skipwhite "=" nextgroup=muttrc
 
 syntax match muttrcVPrefix contained /[?&]/ nextgroup=muttrcVarBool,muttrcVarQuad,muttrcVarNum,muttrcVarStr,muttrcVarDeprecatedBool,muttrcVarDeprecatedQuad,muttrcVarDeprecatedStr
 
+" List of the different screens in mutt
+" UPDATE
 syntax keyword muttrcMenu contained alias attach browser compose editor index pager postpone pgp mix query generic
 syntax match muttrcMenuList "\S\+" contained contains=muttrcMenu
 syntax match muttrcMenuCommas /,/ contained
 
+" List of hooks in Commands in init.h
+" UPDATE
 syntax keyword muttrcHooks contained skipwhite
 			\ account-hook append-hook charset-hook
 			\ close-hook crypt-hook fcc-hook fcc-save-hook folder-hook iconv-hook mbox-hook
@@ -342,13 +347,6 @@ syntax match muttrcColorMatchCount	contained "[0-9]\+"
 syntax match muttrcColorMatchCountNL contained skipwhite skipnl "\s*\\$" nextgroup=muttrcColorMatchCount,muttrcColorMatchCountNL
 syntax region muttrcColorRXPat	contained start=+\s*'+ skip=+\\'+ end=+'\s*+ keepend skipwhite contains=muttrcRXString2 nextgroup=muttrcColorMatchCount,muttrcColorMatchCountNL
 syntax region muttrcColorRXPat	contained start=+\s*"+ skip=+\\"+ end=+"\s*+ keepend skipwhite contains=muttrcRXString2 nextgroup=muttrcColorMatchCount,muttrcColorMatchCountNL
-syntax keyword muttrcColorField	skipwhite contained
-			\ attachment body bold error hdrdefault header index indicator markers message
-			\ normal prompt quoted search sidebar-divider sidebar-flagged sidebar-highlight
-			\ sidebar-indicator sidebar-new sidebar-spoolfile signature status tilde tree
-			\ underline
-syntax match   muttrcColorField	contained "\<quoted\d\=\>"
-syntax keyword muttrcColorField contained sidebar_new
 syntax keyword muttrcColor	contained black blue cyan default green magenta red white yellow
 syntax keyword muttrcColor	contained brightblack brightblue brightcyan brightdefault brightgreen brightmagenta brightred brightwhite brightyellow
 syntax match   muttrcColor	contained "\<\%(bright\)\=color\d\{1,3}\>"
@@ -358,30 +356,9 @@ syntax match muttrcColorBG 	contained /\s*[$]\?\w\+/ contains=muttrcColor,muttrc
 syntax match muttrcColorBGNL	contained skipnl "\s*\\$" nextgroup=muttrcColorBG,muttrcColorBGNL
 syntax match muttrcColorFG 	contained /\s*[$]\?\w\+/ contains=muttrcColor,muttrcVariable,muttrcUnHighlightSpace nextgroup=muttrcColorBG,muttrcColorBGNL
 syntax match muttrcColorFGNL	contained skipnl "\s*\\$" nextgroup=muttrcColorFG,muttrcColorFGNL
-syntax match muttrcColorContext 	contained /\s*[$]\?\w\+/ contains=muttrcColorField,muttrcVariable,muttrcUnHighlightSpace nextgroup=muttrcColorFG,muttrcColorFGNL
-syntax match muttrcColorNL 	contained skipnl "\s*\\$" nextgroup=muttrcColorContext,muttrcColorNL
-syntax match muttrcColorKeyword	contained /^\s*color\s\+/ nextgroup=muttrcColorContext,muttrcColorNL
-syntax region muttrcColorLine keepend start=/^\s*color\s\+\%(index\|header\)\@!/ skip=+\\$+ end=+$+ contains=muttrcColorKeyword,muttrcComment,muttrcUnHighlightSpace
-" Now for the structure of the color index line
-syntax match muttrcPatternNL	contained skipnl "\s*\\$" nextgroup=muttrcPattern,muttrcPatternNL
-syntax match muttrcColorBGI	contained /\s*[$]\?\w\+\s*/ contains=muttrcColor,muttrcVariable,muttrcUnHighlightSpace nextgroup=muttrcPattern,muttrcPatternNL
-syntax match muttrcColorBGNLI	contained skipnl "\s*\\$" nextgroup=muttrcColorBGI,muttrcColorBGNLI
-syntax match muttrcColorFGI	contained /\s*[$]\?\w\+/ contains=muttrcColor,muttrcVariable,muttrcUnHighlightSpace nextgroup=muttrcColorBGI,muttrcColorBGNLI
-syntax match muttrcColorFGNLI	contained skipnl "\s*\\$" nextgroup=muttrcColorFGI,muttrcColorFGNLI
-syntax match muttrcColorContextI	contained /\s*\<index\>/ contains=muttrcUnHighlightSpace nextgroup=muttrcColorFGI,muttrcColorFGNLI
-syntax match muttrcColorNLI	contained skipnl "\s*\\$" nextgroup=muttrcColorContextI,muttrcColorNLI
-syntax match muttrcColorKeywordI	contained skipwhite /\<color\>/ nextgroup=muttrcColorContextI,muttrcColorNLI
-syntax region muttrcColorLine keepend skipwhite start=/\<color\s\+index\>/ skip=+\\$+ end=+$+ contains=muttrcColorKeywordI,muttrcComment,muttrcUnHighlightSpace
-" Now for the structure of the color header line
-syntax match muttrcRXPatternNL	contained skipnl "\s*\\$" nextgroup=muttrcRXString,muttrcRXPatternNL
-syntax match muttrcColorBGH	contained /\s*[$]\?\w\+\s*/ contains=muttrcColor,muttrcVariable,muttrcUnHighlightSpace nextgroup=muttrcRXString,muttrcRXPatternNL
-syntax match muttrcColorBGNLH	contained skipnl "\s*\\$" nextgroup=muttrcColorBGH,muttrcColorBGNLH
-syntax match muttrcColorFGH	contained /\s*[$]\?\w\+/ contains=muttrcColor,muttrcVariable,muttrcUnHighlightSpace nextgroup=muttrcColorBGH,muttrcColorBGNLH
-syntax match muttrcColorFGNLH	contained skipnl "\s*\\$" nextgroup=muttrcColorFGH,muttrcColorFGNLH
-syntax match muttrcColorContextH	contained /\s*\<header\>/ contains=muttrcUnHighlightSpace nextgroup=muttrcColorFGH,muttrcColorFGNLH
-syntax match muttrcColorNLH	contained skipnl "\s*\\$" nextgroup=muttrcColorContextH,muttrcColorNLH
-syntax match muttrcColorKeywordH	contained skipwhite /\<color\>/ nextgroup=muttrcColorContextH,muttrcColorNLH
-syntax region muttrcColorLine keepend skipwhite start=/\<color\s\+header\>/ skip=+\\$+ end=+$+ contains=muttrcColorKeywordH,muttrcComment,muttrcUnHighlightSpace
+syntax match muttrcColorContext 	contained /\s*[$]\?\w\+/ contains=muttrcColorField,muttrcVariable,muttrcUnHighlightSpace,muttrcColorCompose nextgroup=muttrcColorFG,muttrcColorFGNL
+syntax match muttrcColorNL 	contained skipnl "\s*\\$" nextgroup=muttrcColorContext,muttrcColorNL,muttrcColorCompose
+syntax match muttrcColorKeyword	contained /^\s*color\s\+/ nextgroup=muttrcColorContext,muttrcColorNL,muttrcColorCompose
 " And now color's brother:
 syntax region muttrcUnColorPatterns contained skipwhite start=+\s*'+ end=+'+ skip=+\\'+ contains=muttrcPattern nextgroup=muttrcUnColorPatterns,muttrcUnColorPatNL
 syntax region muttrcUnColorPatterns contained skipwhite start=+\s*"+ end=+"+ skip=+\\"+ contains=muttrcPattern nextgroup=muttrcUnColorPatterns,muttrcUnColorPatNL
@@ -394,34 +371,29 @@ syntax match muttrcUnColorIndexNL	contained skipwhite skipnl /\s*\\$/ nextgroup=
 syntax match muttrcUnColorKeyword	contained skipwhite /^\s*uncolor\s\+/ nextgroup=muttrcUnColorIndex,muttrcUnColorIndexNL
 syntax region muttrcUnColorLine keepend start=+^\s*uncolor\s+ skip=+\\$+ end=+$+ contains=muttrcUnColorKeyword,muttrcComment,muttrcUnHighlightSpace
 
-" Mono are almost like color (ojects inherited from color)
 syntax keyword muttrcMonoAttrib	contained bold none normal reverse standout underline
-syntax keyword muttrcMono	contained mono		skipwhite nextgroup=muttrcColorField
+syntax keyword muttrcMono	contained mono		skipwhite nextgroup=muttrcColorField,muttrcColorCompose
 syntax match   muttrcMonoLine	"^\s*mono\s\+\S\+"	skipwhite nextgroup=muttrcMonoAttrib contains=muttrcMono
 
-" Vim syntax file for the NeoMutt attach-headers-color feature.
-syntax keyword muttrcColorField contained attach_headers
+" List of fields in Fields in color.c
+" UPDATE
+syntax keyword muttrcColorField skipwhite contained 
+			\ attach_headers attachment bold error hdrdefault index_author index_collapsed
+			\ index_date index_label index_number index_size index_subject index_tags
+			\ indicator markers message normal progress prompt quoted search sidebar_divider
+			\ sidebar_flagged sidebar_highlight sidebar_indicator sidebar_new
+			\ sidebar_ordinary sidebar_spoolfile signature status tilde tree underline
+			\ body header index index_flags index_tag
+			\ nextgroup=muttrcColor
+syntax match   muttrcColorField	contained "\<quoted\d\=\>"
 
-" Vim syntax file for the NeoMutt index-color feature.
-syntax keyword muttrcColorField contained index
-syntax keyword muttrcColorField contained index_author
-syntax keyword muttrcColorField contained index_collapsed
-syntax keyword muttrcColorField contained index_date
-syntax keyword muttrcColorField contained index_flags
-syntax keyword muttrcColorField contained index_label
-syntax keyword muttrcColorField contained index_number
-syntax keyword muttrcColorField contained index_size
-syntax keyword muttrcColorField contained index_subject
-syntax region muttrcColorLine keepend start=/^\s*color\s\+index_\%(author\|collapsed\|date\|flags\|label\|number\|size\|subject\)/ skip=+\\$+ end=+$+ contains=muttrcColorKeyword,muttrcComment,muttrcUnHighlightSpace
-
-" Vim syntax file for the NeoMutt progress feature.
-syntax keyword muttrcColorField contained progress
-
-syntax keyword muttrcColorField contained sidebar_divider
-syntax keyword muttrcColorField contained sidebar_flagged
-syntax keyword muttrcColorField contained sidebar_highlight
-syntax keyword muttrcColorField contained sidebar_indicator
-syntax keyword muttrcColorField contained sidebar_new
+syntax match muttrcColorCompose skipwhite contained /\s*compose\s*/ nextgroup=muttrcColorComposeField
+" List of fields in ComposeFields in color.c
+" UPDATE
+syntax keyword muttrcColorComposeField skipwhite contained
+			\ header security_encrypt security_sign security_both security_none
+			\ nextgroup=muttrcColorFG,muttrcColorFGNL
+syntax region muttrcColorLine keepend start=/^\s*color\s\+/ skip=+\\$+ end=+$+ contains=muttrcColorKeyword,muttrcComment,muttrcUnHighlightSpace
 
 
 function s:boolQuadGen(type, vars, deprecated)
@@ -442,6 +414,8 @@ function s:boolQuadGen(type, vars, deprecated)
 	exec 'syntax keyword muttrcVar' . l:type . ' skipwhite contained ' . join(l:invvars) . ' nextgroup=muttrcVPrefix,muttrcVarBool,muttrcVarQuad,muttrcVarNum,muttrcVarStr,muttrcVarDeprecatedBool,muttrcVarDeprecatedQuad,muttrcVarDeprecatedStr'
 endfunction
 
+" List of DT_BOOL in MuttVars in init.h
+" UPDATE
 call s:boolQuadGen('Bool', [
 			\ 'allow_8bit', 'allow_ansi', 'arrow_cursor', 'ascii_chars', 'askbcc', 'askcc',
 			\ 'ask_follow_up', 'ask_x_comment_to', 'attach_split', 'autoedit', 'auto_tag',
@@ -493,6 +467,8 @@ call s:boolQuadGen('Bool', [
 			\ ], 0)
 
 " Deprecated Bools
+" UPDATE
+" List of DT_SYNONYM synonyms of Bools in MuttVars in init.h
 call s:boolQuadGen('Bool', [
 			\ 'edit_hdrs', 'envelope_from', 'forw_decode', 'forw_decrypt', 'forw_quote',
 			\ 'pgp_autoencrypt', 'pgp_autosign', 'pgp_auto_traditional',
@@ -500,6 +476,8 @@ call s:boolQuadGen('Bool', [
 			\ 'pgp_replysignencrypted', 'xterm_set_titles'
 			\ ], 1)
 
+" List of DT_QUAD in MuttVars in init.h
+" UPDATE
 call s:boolQuadGen('Quad', [
 			\ 'abort_noattach', 'abort_nosubject', 'abort_unmodified', 'bounce',
 			\ 'catchup_newsgroup', 'copy', 'crypt_verify_sig', 'delete', 'fcc_attach',
@@ -510,10 +488,14 @@ call s:boolQuadGen('Quad', [
 			\ ], 0)
 
 " Deprecated Quads
+" UPDATE
+" List of DT_SYNONYM synonyms of Quads in MuttVars in init.h
 call s:boolQuadGen('Quad', [
 			\ 'mime_fwd', 'pgp_verify_sig'
 			\ ], 1)
 
+" List of DT_NUMBER in MuttVars in init.h
+" UPDATE
 syntax keyword muttrcVarNum	skipwhite contained
 			\ connect_timeout debug_level history imap_keepalive imap_pipeline_depth
 			\ imap_poll_timeout mail_check mail_check_stats_interval menu_context net_inc
@@ -526,6 +508,12 @@ syntax keyword muttrcVarNum	skipwhite contained
 			\ wrapmargin write_inc
 			\ nextgroup=muttrcSetNumAssignment,muttrcVPrefix,muttrcVarBool,muttrcVarQuad,muttrcVarNum,muttrcVarStr,muttrcVarDeprecatedBool,muttrcVarDeprecatedQuad,muttrcVarDeprecatedStr
 
+" List of DT_STRING in MuttVars in init.h
+" UPDATE
+" Special cases first, and all the rest at the end
+" A lot of special cases are format, flatcap compiled a list here https://pastebin.com/raw/5QXhiP6L
+" Formats themselves must be updated in their respective groups
+" See s:escapesConditionals
 syntax match muttrcVarStr	contained skipwhite 'my_[a-zA-Z0-9_]\+' nextgroup=muttrcSetStrAssignment,muttrcVPrefix,muttrcVarBool,muttrcVarQuad,muttrcVarNum,muttrcVarStr,muttrcVarDeprecatedBool,muttrcVarDeprecatedQuad,muttrcVarDeprecatedStr
 syntax keyword muttrcVarStr	contained skipwhite alias_format nextgroup=muttrcVarEqualsAliasFmt
 syntax keyword muttrcVarStr	contained skipwhite attach_format nextgroup=muttrcVarEqualsAttachFmt
@@ -607,6 +595,9 @@ syntax keyword muttrcVarStr	contained skipwhite
 			\ pgp_sort_keys sidebar_sort_method sort sort_alias sort_aux sort_browser
 			\ nextgroup=muttrcSetStrAssignment,muttrcVPrefix,muttrcVarBool,muttrcVarQuad,muttrcVarNum,muttrcVarStr,muttrcVarDeprecatedBool,muttrcVarDeprecatedQuad,muttrcVarDeprecatedStr
 
+" List of commands in Commands in init.h
+" UPDATE
+" Remember to remove hooks, they have already been dealt with
 syntax keyword muttrcCommand	skipwhite charset-hook nextgroup=muttrcRXString
 syntax keyword muttrcCommand	skipwhite unhook nextgroup=muttrcHooks
 syntax keyword muttrcCommand	skipwhite spam nextgroup=muttrcSpamPattern
@@ -625,6 +616,8 @@ syntax keyword muttrcCommand	skipwhite
 			\ unmailboxes unmailto_allow unmime_lookup unmono unmy_hdr unscore unsetenv
 			\ unsidebar_whitelist unsubjectrx unvirtual-mailboxes virtual-mailboxes
 
+" List of functions in functions.h
+" UPDATE
 syntax match muttrcFunction contained "\<accept\>"
 syntax match muttrcFunction contained "\<append\>"
 syntax match muttrcFunction contained "\<attach-file\>"
@@ -942,9 +935,9 @@ highlight def link muttrcColorContext			Error
 highlight def link muttrcColorContextI			Identifier
 highlight def link muttrcColorContextH			Identifier
 highlight def link muttrcColorKeyword			muttrcCommand
-highlight def link muttrcColorKeywordI			muttrcColorKeyword
-highlight def link muttrcColorKeywordH			muttrcColorKeyword
 highlight def link muttrcColorField			Identifier
+highlight def link muttrcColorCompose			Identifier
+highlight def link muttrcColorComposeField		Identifier
 highlight def link muttrcColor				Type
 highlight def link muttrcColorFG			Error
 highlight def link muttrcColorFGI			Error
