@@ -106,7 +106,7 @@ install:	all
 	for i in guide.html index.html $(CHUNKED_DOCFILES); do \
 		$(INSTALL) -m 644 $$i $(DESTDIR)$(DOC_DIR); \
 	done
-	for i in guide.txt neomutt-syntax.vim neomuttrc PGP-Notes.txt smime-notes.txt; do \
+	for i in guide.txt neomuttrc PGP-Notes.txt smime-notes.txt; do \
 		$(INSTALL) -m 644 $$i $(DESTDIR)$(DOC_DIR); \
 	done
 	for i in $(SRC_DOCS); do \
@@ -128,7 +128,7 @@ uninstall:
 	for i in guide.html index.html $(CHUNKED_DOCFILES); do \
 		$(RM) $(DESTDIR)$(DOC_DIR)/$$i; \
 	done
-	for i in guide.txt neomutt-syntax.vim neomuttrc PGP-Notes.txt smime-notes.txt; do \
+	for i in guide.txt neomuttrc PGP-Notes.txt smime-notes.txt; do \
 		$(RM) $(DESTDIR)$(DOC_DIR)/$$i; \
 	done
 	for i in $(SRC_DOCS); do \
